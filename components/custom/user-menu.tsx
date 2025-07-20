@@ -9,11 +9,11 @@ export function UserMenu() {
 
   if (!session) {
     return (
-      <div className="flex items-center space-x-4">
-        <Button variant="ghost" className="text-foreground hover:text-primary">
+      <div className="flex items-center space-x-2 md:space-x-4">
+        <Button variant="ghost" className="text-foreground hover:text-primary text-xs md:text-sm px-2 md:px-4">
           <a href="/login">Sign In</a>
         </Button>
-        <Button>
+        <Button className="text-xs md:text-sm px-2 md:px-4">
           <a href="/signup">Get Started</a>
         </Button>
       </div>
@@ -21,16 +21,16 @@ export function UserMenu() {
   }
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-2 md:space-x-4">
       <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
           <span className="text-white font-bold text-sm">
-            {session.user.name?.[0] || session.user.email?.[0] || "U"}
+            {session.user.username?.[0] || session.user.email?.[0] || "U"}
           </span>
         </div>
         <div className="hidden md:block">
           <p className="text-sm font-medium text-foreground">
-            {session.user.name || session.user.username}
+            {session.user.username}
           </p>
           <p className="text-xs text-muted-foreground">
             {session.user.email}
@@ -38,15 +38,15 @@ export function UserMenu() {
         </div>
       </div>
       
-      <div className="flex items-center space-x-2">
-        <Badge variant="secondary" className="text-xs">
+      <div className="flex items-center space-x-1 md:space-x-2">
+        <Badge variant="secondary" className="text-xs hidden sm:block">
           {session.user.username}
         </Badge>
         <Button 
           variant="outline" 
           size="sm"
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="text-xs"
+          className="text-xs px-2 md:px-3"
         >
           Sign Out
         </Button>

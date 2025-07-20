@@ -1,11 +1,12 @@
+"use client";
 import { Navigation } from "@/components/custom/navigation";
 import { LoginForm } from "@/components/custom/login-form";
-
+import { Suspense } from "react";
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
+
       <div className="pt-20 pb-12">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto">
@@ -20,13 +21,18 @@ export default function LoginPage() {
                 Sign in to your account to continue your quiz journey
               </p>
             </div>
-            
-            <LoginForm />
-            
+
+            <Suspense fallback={<p>Loading login form...</p>}>
+              <LoginForm />
+            </Suspense>
+
             <div className="text-center mt-6">
               <p className="text-sm text-muted-foreground">
                 Don`&apos;t have an account?{" "}
-                <a href="/signup" className="text-primary hover:text-primary-dark font-medium">
+                <a
+                  href="/signup"
+                  className="text-primary hover:text-primary-dark font-medium"
+                >
                   Sign up
                 </a>
               </p>
@@ -36,4 +42,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}

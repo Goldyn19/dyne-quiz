@@ -33,11 +33,13 @@ const handler = NextAuth({
 
           if (response.ok && data) {
             return {
-              id: data.id,
-              email: data.email,
-              username: data.username,
-              image: data.avatar,
-              token: data.tokens?.access,
+              id: data.user.id,
+              email: data.user.email,
+              username: data.user.username,
+              image: data.user.image,
+              role: data.user.role,
+              accessToken: data.tokens?.access,
+              refreshToken: data.tokens?.refresh,
             };
           } else if (response.status === 401) {
             throw new Error(data.message || "Invalid username or password");
@@ -81,7 +83,9 @@ const handler = NextAuth({
           // Attach backend data
           user.id = data.user.id;
           user.username = data.user.username;
-          user.token = data.tokens?.access;
+          user.role = data.user.role;
+          user.accessToken = data.tokens?.access;
+          user.refreshToken = data.tokens?.refresh;
           user.image = data.user.image || (profile as { picture?: string }).picture;
         } catch (err) {
           console.error("Google login failed:", err);
@@ -95,7 +99,9 @@ const handler = NextAuth({
       if (user) {
         token.id = user.id;
         token.username = user.username ?? undefined;
-        token.accessToken = user.token;
+        token.role = user.role ?? undefined;
+        token.accessToken = user.accessToken ?? user.token;
+        token.refreshToken = user.refreshToken ?? undefined;
         token.picture = user.image ?? undefined;
       }
       return token;
@@ -105,8 +111,10 @@ const handler = NextAuth({
       if (token) {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
+        session.user.role = token.role as 'admin' | 'member' | undefined;
         session.user.image = token.picture as string;
         session.accessToken = token.accessToken as string;
+        session.refreshToken = token.refreshToken as string;
       }
       return session;
     },

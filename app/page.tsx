@@ -1,23 +1,23 @@
 import { Separator } from "@/components/ui/separator";
-import { 
-  Navigation,
+import {
   HeroSection,
   FeatureCard,
   StatsSection,
   CTASection,
   Footer,
-  UsersIcon, 
-  TrophyIcon, 
-  ZapIcon, 
-  TargetIcon, 
-  GlobeIcon, 
-  ShieldIcon 
+  UsersIcon,
+  TrophyIcon,
+  ZapIcon,
+  TargetIcon,
+  GlobeIcon,
+  ShieldIcon,
 } from "@/components/custom";
+import { HomeNavigation } from "@/components/custom/home-navigation";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      <HomeNavigation />
       {/* Hero Section */}
       <HeroSection
         title="Quiz Together"
@@ -25,11 +25,11 @@ export default function Home() {
         description="Challenge your friends in real-time multiplayer quizzes. Test your knowledge, compete for high scores, and have fun learning together in an engaging interactive environment."
         primaryAction={{
           label: "Start Playing",
-          href: "/play"
+          href: "/play",
         }}
         secondaryAction={{
           label: "Learn More",
-          href: "/about"
+          href: "/about",
         }}
         features={["Real-time", "Multiplayer", "Leaderboards", "Custom Quizzes"]}
       />
@@ -54,7 +54,7 @@ export default function Home() {
               tags={["Live", "Multiplayer", "Real-time"]}
               variant="primary"
             />
-            
+
             <FeatureCard
               icon={<TrophyIcon />}
               title="Leaderboards & Achievements"
@@ -62,7 +62,7 @@ export default function Home() {
               tags={["Leaderboards", "Achievements", "Progress"]}
               variant="secondary"
             />
-            
+
             <FeatureCard
               icon={<ZapIcon />}
               title="Lightning Fast"
@@ -70,7 +70,7 @@ export default function Home() {
               tags={["Fast", "Responsive", "Modern"]}
               variant="accent"
             />
-            
+
             <FeatureCard
               icon={<TargetIcon />}
               title="Custom Quizzes"
@@ -78,7 +78,7 @@ export default function Home() {
               tags={["Custom", "Categories", "Difficulty"]}
               variant="primary"
             />
-            
+
             <FeatureCard
               icon={<GlobeIcon />}
               title="Global Community"
@@ -86,7 +86,7 @@ export default function Home() {
               tags={["Global", "Community", "Connect"]}
               variant="secondary"
             />
-            
+
             <FeatureCard
               icon={<ShieldIcon />}
               title="Secure & Reliable"
