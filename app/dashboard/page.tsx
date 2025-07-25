@@ -7,9 +7,10 @@ import { MemberDashboard } from "@/components/custom/member-dashboard";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
-  const userRole = session?.user?.role;
+  const userRole = session?.organization?.role;
 
   console.log("User Role:", userRole);
+  console.log(session   )  
 
   return (
     <div className="min-h-screen bg-background">

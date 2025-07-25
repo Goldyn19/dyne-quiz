@@ -81,12 +81,12 @@ export function AdminDashboard() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div>
-                <p className="font-medium">Active Sessions</p>
-                <p className="text-sm text-muted-foreground">12 members online</p>
+                <p className="font-medium">Organization Age</p>
+                <p className="text-sm text-muted-foreground">Joined 2 months ago</p>
               </div>
               <div className="text-right">
-                <Badge variant="secondary">Live</Badge>
-                <p className="text-xs text-muted-foreground mt-1">Real-time</p>
+                <Badge variant="secondary">Apr 2024</Badge>
+                <p className="text-xs text-muted-foreground mt-1">Since Creation</p>
               </div>
             </div>
 
@@ -103,12 +103,12 @@ export function AdminDashboard() {
 
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div>
-                <p className="font-medium">Storage Usage</p>
-                <p className="text-sm text-muted-foreground">2.4 GB / 10 GB</p>
+                <p className="font-medium">Question Bank</p>
+                <p className="text-sm text-muted-foreground">Total Questions</p>
               </div>
               <div className="text-right">
-                <Badge variant="secondary">24%</Badge>
-                <p className="text-xs text-muted-foreground mt-1">Used</p>
+                <Badge variant="secondary">42</Badge>
+                <p className="text-xs text-muted-foreground mt-1">In Organization</p>
               </div>
             </div>
           </CardContent>

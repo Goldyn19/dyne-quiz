@@ -37,9 +37,13 @@ const handler = NextAuth({
               email: data.user.email,
               username: data.user.username,
               image: data.user.image,
-              role: data.user.role,
               accessToken: data.tokens?.access,
               refreshToken: data.tokens?.refresh,
+              organization: {
+                orgId: data.user.org_id?.toString(),
+                orgName: data.user.org_name,
+                role: data.user.role,
+              },
             };
           } else if (response.status === 401) {
             throw new Error(data.message || "Invalid username or password");
@@ -81,12 +85,17 @@ const handler = NextAuth({
           if (!res.ok) throw new Error(data.error || "Google login failed");
 
           // Attach backend data
-          user.id = data.user.id;
-          user.username = data.user.username;
-          user.role = data.user.role;
-          user.accessToken = data.tokens?.access;
-          user.refreshToken = data.tokens?.refresh;
-          user.image = data.user.image || (profile as { picture?: string }).picture;
+          const typedUser = user as import("next-auth").User & { accessToken?: string; refreshToken?: string };
+          typedUser.id = data.user.id;
+          typedUser.username = data.user.username;
+          typedUser.organization = {
+            orgId: data.user.org_id?.toString(),
+            orgName: data.user.org_name,
+            role: data.user.role,
+          };
+          typedUser.accessToken = data.tokens?.access;
+          typedUser.refreshToken = data.tokens?.refresh;
+          typedUser.image = data.user.image || (profile as { picture?: string }).picture;
         } catch (err) {
           console.error("Google login failed:", err);
           return false;
@@ -95,26 +104,37 @@ const handler = NextAuth({
       return true;
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.id = user.id;
-        token.username = user.username ?? undefined;
-        token.role = user.role ?? undefined;
-        token.accessToken = user.accessToken ?? user.token;
-        token.refreshToken = user.refreshToken ?? undefined;
-        token.picture = user.image ?? undefined;
+        const customUser = user as import("next-auth").User & { accessToken?: string; refreshToken?: string; token?: string };
+        token.user = {
+          id: customUser.id,
+          username: customUser.username ?? undefined,
+          email: customUser.email ?? undefined,
+          image: customUser.image ?? undefined,
+        };
+        token.organization = customUser.organization ?? undefined;
+        token.accessToken = customUser.accessToken || customUser.token || "";
+        token.refreshToken = customUser.refreshToken ?? undefined;
+      }
+      // Handle updates from update()
+      if (trigger === "update" && session?.organization) {
+        token.organization = session.organization;
       }
       return token;
     },
 
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string;
-        session.user.username = token.username as string;
-        session.user.role = token.role as 'admin' | 'member' | undefined;
-        session.user.image = token.picture as string;
-        session.accessToken = token.accessToken as string;
-        session.refreshToken = token.refreshToken as string;
+        session.user = {
+          id: (token.user?.id ?? "") as string,
+          username: token.user?.username,
+          email: token.user?.email,
+          image: token.user?.image,
+        };
+        session.organization = token.organization ?? undefined;
+        session.accessToken = typeof token.accessToken === "string" ? token.accessToken : "";
+        // Optionally add refreshToken if you want
       }
       return session;
     },

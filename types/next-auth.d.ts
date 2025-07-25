@@ -3,28 +3,32 @@
 import NextAuth from "next-auth";
 
 declare module "next-auth" {
-  interface User {
-    id: string;
-    email: string;
-    name?: string;
-    username?: string;
-    image?: string;
-    role?: "admin" | "member";
-    accessToken?: string;
-    refreshToken?: string;
-  }
-
   interface Session {
     user: {
       id: string;
-      email: string;
-      name?: string;
-      username?: string;
-      image?: string;
-      role?: "admin" | "member";
+      username?: string | null;
+      email?: string | null;
+      image?: string | null;
     };
-    accessToken?: string;
-    refreshToken?: string;
+    organization?: {
+      orgId?: string;
+      orgName?: string;
+      role?: "admin" | "member";
+    }
+    accessToken: string;
+  }
+
+    interface User {
+    id: string;
+    email?: string | null;
+    username?: string | null;
+    image?: string | null;
+    token?: string;
+    organization?: {
+      orgId?: string;
+      orgName?: string;
+      role?: "admin" | "member";
+    }
   }
 
   interface Account {
@@ -35,12 +39,19 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id: string;
-    username?: string;
-    role?: "admin" | "member";
-    accessToken?: string;
+    user: {
+      id: string;
+      username?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+    organization?: {
+      orgId?: string;
+      orgName?: string;
+      role?: "admin" | "member";
+    }
+    accessToken: string;
     refreshToken?: string;
-    picture?: string;
   }
 } 
 
