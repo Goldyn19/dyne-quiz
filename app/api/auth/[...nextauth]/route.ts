@@ -2,6 +2,28 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
+async function refreshAccessToken(refreshToken: string) {
+  try {
+    const res = await fetch(`${process.env.BACKEND_URL}/auth/token/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to refresh token");
+    }
+
+    const data = await res.json();
+    return {
+      accessToken: data.access,
+    };
+  } catch (error) {
+    console.error("Error refreshing access token:", error);
+    throw error;
+  }
+}
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -52,7 +74,7 @@ const handler = NextAuth({
           } else {
             throw new Error(data.message || "Login failed");
           }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           throw new Error(error.message || "Login failed");
         }
@@ -104,6 +126,7 @@ const handler = NextAuth({
       return true;
     },
 
+
     async jwt({ token, user, trigger, session }) {
       if (user) {
         const customUser = user as import("next-auth").User & { accessToken?: string; refreshToken?: string; token?: string };
@@ -116,10 +139,38 @@ const handler = NextAuth({
         token.organization = customUser.organization ?? undefined;
         token.accessToken = customUser.accessToken || customUser.token || "";
         token.refreshToken = customUser.refreshToken ?? undefined;
+
+        // Set TTL
+        token.accessTokenExpires = Date.now() + 2 * 60 * 60 * 1000;
+        token.refreshTokenExpires = Date.now() + 2 * 24 * 60 * 60 * 1000;
+
       }
+
+      // Handle refresh logic
+      const accessTokenExpired = Date.now() >= (token.accessTokenExpires as number);
+      const refreshTokenValid = Date.now() < (token.refreshTokenExpires as number);
       // Handle updates from update()
       if (trigger === "update" && session?.organization) {
         token.organization = session.organization;
+      }
+
+      // Check if the token has expired
+      if (accessTokenExpired) {
+        console.log("Access token expired. Attempting to refresh…");
+
+        if (refreshTokenValid && token.refreshToken) {
+          try {
+            const refreshed = await refreshAccessToken(token.refreshToken);
+            token.accessToken = refreshed.accessToken;
+            token.accessTokenExpires = Date.now() + 2 * 60 * 60 * 1000;
+          } catch (err) {
+            console.error("Failed to refresh access token", err);
+            return {...token, error: "RefreshAccessTokenError" };
+          }
+        } else {
+          console.warn("Refresh token expired. Signing user out.");
+          return {...token, error: "Refresh token expired. Signing user out." };
+        }
       }
       return token;
     },
@@ -141,6 +192,8 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
+    maxAge: 2 * 60 * 60, // 2 hours
+    updateAge: 24 * 60 * 60, // Update session every 24 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
 });

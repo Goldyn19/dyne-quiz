@@ -14,11 +14,10 @@ function OrgRedirectGuard({ children }: { children: React.ReactNode }) {
     if (status === "loading") return;
     console.log("Session data:", session);
 
-    // 🚨 Don't redirect if we're already on the org signup page
     if (
       session &&
       (!session.organization || !session.organization.orgId) &&
-      pathname !== "/signup/organization"
+      !["/signup/organization", "/signup", "/","/login"].includes(pathname)
     ) {
       setRedirecting(true);
       router.push("/signup/organization");

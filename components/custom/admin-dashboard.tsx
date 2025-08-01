@@ -237,9 +237,9 @@ export function AdminDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Session Monitoring</CardTitle>
+            <CardTitle>Recently Added Members</CardTitle>
             <CardDescription>
-              Active user sessions and system status
+              The latest members to join your organization
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -250,10 +250,10 @@ export function AdminDashboard() {
                 </div>
                 <div>
                   <p className="font-medium">John Doe</p>
-                  <p className="text-xs text-muted-foreground">Taking JavaScript Quiz</p>
+                  <p className="text-xs text-muted-foreground">johndoe@email.com</p>
                 </div>
               </div>
-              <Badge variant="secondary">Active</Badge>
+              <span className="text-xs text-muted-foreground">Joined 2 days ago</span>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
@@ -263,10 +263,10 @@ export function AdminDashboard() {
                 </div>
                 <div>
                   <p className="font-medium">Jane Smith</p>
-                  <p className="text-xs text-muted-foreground">Viewing Dashboard</p>
+                  <p className="text-xs text-muted-foreground">jane@email.com</p>
                 </div>
               </div>
-              <Badge variant="secondary">Active</Badge>
+              <span className="text-xs text-muted-foreground">Joined 5 days ago</span>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
@@ -276,10 +276,10 @@ export function AdminDashboard() {
                 </div>
                 <div>
                   <p className="font-medium">Mike Johnson</p>
-                  <p className="text-xs text-muted-foreground">Completed Math Quiz</p>
+                  <p className="text-xs text-muted-foreground">mike@email.com</p>
                 </div>
               </div>
-              <Badge variant="outline">Completed</Badge>
+              <span className="text-xs text-muted-foreground">Joined 1 week ago</span>
             </div>
           </CardContent>
         </Card>
